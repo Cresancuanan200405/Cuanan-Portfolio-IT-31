@@ -19,6 +19,6 @@ This is a personal developer portfolio built with Next.js (App Router), TypeScri
    ```bash
    npm run dev
    ```
-3. Open your browser at http://localhost:3000.
+3. Open your browser at http://localhost:3001.
 
 Before sharing this portfolio, update your name, email, GitHub, and LinkedIn links in `app/page.tsx`.
