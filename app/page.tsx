@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, Code, Sparkles, Zap, Users, Rocket } from "lucide-react";
+import { ArrowRight, Code, Sparkles, Zap, Users, Rocket, Send, Github, Facebook } from "lucide-react";
 import Link from "next/link";
 
 const projects = [
@@ -46,6 +46,134 @@ const skills = [
   { name: "TypeScript", level: 75},
   { name: "Git & GitHub", level: 85},
 ];
+
+function ContactForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [result, setResult] = useState<string>("");
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setResult("Sending...");
+    
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+    
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: json
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setResult("Message sent successfully!");
+        form.reset();
+      } else {
+        console.log("Error:", data);
+        setResult(data.message || "Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setResult("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setResult(""), 5000);
+    }
+  };
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-6 max-w-2xl mx-auto">
+      <input type="hidden" name="access_key" value="baa1a2d6-14ef-4525-bfb8-640c2e917a1a" />
+      
+      <div className="grid sm:grid-cols-2 gap-6">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            className="w-full px-4 py-3 rounded-xl border border-violet-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all outline-none"
+            placeholder="Your name"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className="w-full px-4 py-3 rounded-xl border border-violet-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all outline-none"
+            placeholder="your@email.com"
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Subject
+        </label>
+        <input
+          type="text"
+          id="subject"
+          name="subject"
+          className="w-full px-4 py-3 rounded-xl border border-violet-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all outline-none"
+          placeholder="What's this about?"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Message
+        </label>
+        <textarea
+          id="message"
+          name="message"
+          rows={6}
+          className="w-full px-4 py-3 rounded-xl border border-violet-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all outline-none resize-none"
+          placeholder="Tell me about your project or inquiry..."
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full group flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-2xl hover:shadow-violet-500/30 transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+      >
+        <span>{isSubmitting ? "Sending..." : "Send Message"}</span>
+        <Send className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+      </button>
+
+      {result && (
+        <div className={`text-center p-4 rounded-xl ${
+          result.includes("success") 
+            ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300" 
+            : result.includes("Sending")
+            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+            : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300"
+        }`}>
+          {result}
+        </div>
+      )}
+    </form>
+  );
+}
 
 export default function HomePage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -345,44 +473,40 @@ export default function HomePage() {
             <div className="relative rounded-3xl overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-fuchsia-500/10 to-cyan-500/10" />
               
-              <div className="relative backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 border border-violet-200/50 dark:border-gray-800 rounded-3xl p-12 text-center">
-                <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
-                    Let&apos;s Connect
-                  </span>
-                </h2>
-                
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto">
-                  Interested in collaboration or have a project in mind? I&apos;d love to hear about it!
-                </p>
-                
-                <div className="flex flex-wrap justify-center gap-6">
-                  <a
-                    href="https://mail.google.com/mail/?view=cm&fs=1&to=cresan.cuanan@urios.edu.ph&su=Portfolio%20Inquiry&body=Hi%20Cresan,%0A%0A"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-2xl hover:shadow-violet-500/30 transition-all duration-300 hover:scale-105"
-                  >
-                    <span>Send Email</span>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                  </a>
+              <div className="relative backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 border border-violet-200/50 dark:border-gray-800 rounded-3xl p-12">
+                <div className="text-center mb-10">
+                  <h2 className="text-4xl sm:text-5xl font-bold mb-6">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-600">
+                      Get In Touch
+                    </span>
+                  </h2>
                   
+                  <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    Have a question or want to work together? Send me a message!
+                  </p>
+                </div>
+                
+                <ContactForm />
+                
+                <div className="flex flex-wrap justify-center gap-6 mt-10 pt-10 border-t border-violet-200 dark:border-gray-700">
                   <a
                     href="https://github.com/Cresancuanan200405"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-3 px-8 py-4 rounded-full border-2 border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 font-semibold hover:border-violet-400 dark:hover:border-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-all duration-300 hover:scale-105"
                   >
+                    <Github className="w-5 h-5" />
                     <span>GitHub</span>
                   </a>
                   
                   <a
-                    href="https://linkedin.com"
+                    href="https://www.facebook.com/cresan.cuanan"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center gap-3 px-8 py-4 rounded-full border-2 border-violet-200 dark:border-violet-800 text-violet-700 dark:text-violet-300 font-semibold hover:border-violet-400 dark:hover:border-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-all duration-300 hover:scale-105"
                   >
-                    <span>LinkedIn</span>
+                    <Facebook className="w-5 h-5" />
+                    <span>Facebook</span>
                   </a>
                 </div>
               </div>

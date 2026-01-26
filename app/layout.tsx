@@ -56,8 +56,8 @@ export default function RootLayout({
                   <a href="https://github.com" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                     GitHub
                   </a>
-                  <a href="https://linkedin.com" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
-                    LinkedIn
+                  <a href="https://www.facebook.com/cresan.cuanan" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
+                    Facebook
                   </a>
                   <a href="mailto:cresan.cuanan@urios.edu.ph" className="text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors">
                     Email
